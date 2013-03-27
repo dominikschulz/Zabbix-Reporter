@@ -1,0 +1,164 @@
+/* http://www.zurb.com/article/221/css3-animation-will-rock-your-world
+ * part I
+ */
+@-webkit-keyframes pulse {
+  from {
+    -webkit-transform: scale(1.0);
+    opacity: 1.0;
+  }
+  50% {
+    -webkit-transform: scale(1.2);
+    opacity: 0.9;
+  }
+  to { 
+    -webkit-transform: scale(1.0);
+    opacity: 1.0;
+  }
+}
+
+@media all{
+    body{
+            font:14px Arial, Helvetica, sans-serif;
+            margin:0;
+            background:#fff;
+            width:100%;
+            color:#000;
+    }
+    /*
+     * http://www.barelyfitz.com/screencast/html-training/css/positioning/
+     */
+    .trigger {
+            background:lightgrey;
+            color:#000;
+            border-bottom:1px solid #f6f6f6;
+            border-top:1px solid #f6f6f6;
+            position: relative;
+            height: 80px;
+            
+            -moz-box-shadow:    inset 0 6px 6px -6px rgba(0,0,0,0.75),
+                                inset 0 -6px 6px -6px rgba(0,0,0,0.75);
+            -webkit-box-shadow: inset 0 6px 6px -6px rgba(0,0,0,0.75),
+                                inset 0 -6px 6px -6px rgba(0,0,0,0.75);
+            box-shadow:         inset 0 6px 6px -6px rgba(0,0,0,0.75),
+                                inset 0 -6px 6px -6px rgba(0,0,0,0.75);
+    }
+    .trigger > div {
+        margin: 10px;
+    }
+    .trigger > .field {
+        float: left;
+    }
+    .trigger > .severity {
+        width: 100px;
+        height: 15px;
+        background-color: white;
+        color: black;
+        margin: 5px;
+        padding: 5px;
+        border: 5px solid black;
+    }
+    .trigger > .host {
+        font-weight: bold;
+    }
+    .trigger > .name {
+        
+    }
+    .trigger > .time {
+        
+    }
+    .trigger > .icon {
+        
+    }
+    .trigger > .button {
+        
+    }
+    .trigger > .clear {
+        clear: both;
+    }
+    .trigger > .details {
+        font-size: 0.9em;
+    }
+    .disaster{
+        background:red;
+        color:#fff;
+        /* to set icon */
+    }
+    .disaster > .severity {
+        /* http://www.zurb.com/article/221/css3-animation-will-rock-your-world
+         * part II
+         */
+        opacity: 1.0;
+        -webkit-animation-name: pulse; 
+        -webkit-animation-duration: 0.5s; 
+        -webkit-animation-iteration-count: infinite;
+    }
+    .high{
+        background:red;
+        color:#fff;
+    }
+    .average{
+        background:orange;
+        color:#000;
+    }
+    .warning{
+        background:yellow;
+        color:#000;
+    }
+    .information{
+        background:lightgreen;
+        color:#000;
+    }
+
+
+}
+
+@media all and (min-width: 1600px) {
+    body {
+        font-size: 30px;
+    }
+    .trigger {
+        height: 55px;
+    }
+    .trigger > .clear {
+        clear: none;
+    }
+    .trigger > .severity {
+        width: 150px;
+    }
+    .trigger > .severity {
+        padding: 1px;
+        margin: 5px;
+        height: 30px;
+    }
+}
+@media all and (max-width: 1024px){
+}
+@media all and (max-width: 960px){
+    .severity { display:none; }
+    .trigger > div {
+        margin: 1px;
+    }
+}
+@media all and (max-width: 780px){
+    .trigger {
+        height: 55px;
+    }
+    .trigger > .details {
+        display: none;
+    }
+}
+@media all and (max-width: 504px){
+    body {
+        font-size:12px;
+    }
+
+     .trigger > .field {
+        float: none;
+    }   
+}
+@media all and (max-width: 320px){
+}
+@media all
+	and (min-device-width: 768px)
+	and (max-device-width: 1024px){
+}
