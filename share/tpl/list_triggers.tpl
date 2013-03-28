@@ -1,7 +1,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <link rel="stylesheet" type="text/css" href="/css/default.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="css/default.css" media="all" />
         <meta http-equiv="refresh" content="30" />
     </head>
     <body>
