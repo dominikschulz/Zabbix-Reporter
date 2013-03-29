@@ -159,7 +159,13 @@ sub _init_tt {
                 1,
             ],
             'ucfirst'       => sub { my $str = shift; return ucfirst($str); },
-            'localtime'     => sub { my $str = shift; return localtime($str); },
+            'localtime'     => sub {
+                my $str = shift;
+                my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime($str);
+                $year += 1900;
+                $mon++;
+                return sprintf('%02d.%02d.%04d %02d:%02d:%02d', $mday, $mon, $year, $hour, $min, $sec);
+            },
         },
     };
     my $TT = Template::->new($tpl_config);

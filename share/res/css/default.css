@@ -59,6 +59,7 @@
     font-weight: bold;
     margin: 5px;
     padding: 5px;
+    color: #000;
   }
   .trigger > .host {
     font-weight: normal;
@@ -105,7 +106,10 @@
   .high > .severity {
     background: none repeat scroll 0 0 red;
     border-color: darkred;
-    color: #000;
+    text-shadow:  0    1px  0 #fff,
+		  0    -1px 0 #fff,
+		  1px  0    0 #fff,
+		  -1px 0    0 #fff;
   }
   .average {
     background:#ffeecd;
@@ -143,13 +147,23 @@
   .trigger > .clear {
     clear: none;
   }
-  .trigger > .severity {
-    width: 150px;
+  .trigger > .field {
+    float: none;
   }
   .trigger > .severity {
+    width: 150px;
     padding: 1px;
     margin: 5px;
     height: 30px;
+  }
+  .trigger > .host {
+    width: 400px;
+  }
+  .trigger > .name {
+    width: 600px;
+  }
+  .trigger > .details {
+    display: none;
   }
 }
 @media all and (max-width: 1024px) {

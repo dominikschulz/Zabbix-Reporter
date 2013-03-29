@@ -1,4 +1,3 @@
-[% USE Dumper %]
 <html>
     <head>
         <meta charset="utf-8" />
@@ -8,7 +7,6 @@
     </head>
     <body>
         [% FOREACH trigger IN triggers %]
-        <!-- [% Dumper.dump(trigger) %]-->
         <div class="trigger [% trigger.severity %]">
             <div class="field severity">[% trigger.severity | ucfirst %]</div>
             <div class="field icon">
