@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <link rel="stylesheet" type="text/css" href="/css/default.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="css/default.css" media="all" />
         <meta http-equiv="refresh" content="[% refresh %]" />
         <meta name="viewport" content="initial-scale=1.0">
     </head>

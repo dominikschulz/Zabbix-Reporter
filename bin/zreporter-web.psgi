@@ -31,6 +31,6 @@ if(!$static_path || !-d $static_path) {
 
 builder {
     enable 'Plack::Middleware::Static',
-        path => qr{^/(img|js|css)/}, root => $static_path;
+        path => qr{/(img|js|css)/}, root => $static_path;
     $app;
 };
