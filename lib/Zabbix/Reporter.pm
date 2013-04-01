@@ -1,4 +1,5 @@
 package Zabbix::Reporter;
+# ABSTRACT: Zabbix dashboard
 
 use Moose;
 use namespace::autoclean;
@@ -202,79 +203,6 @@ __END__
 
 =head1 NAME
 
-Zabbix::Reporter - The great new Zabbix::Reporter!
+Zabbix::Reporter - Zabbix dashboard
 
-=head1 VERSION
-
-Version 0.01
-
-=head1 SYNOPSIS
-
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
-    use Zabbix::Reporter;
-
-    my $foo = Zabbix::Reporter->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
-
-=head1 AUTHOR
-
-Dominik Schulz, C<< <dominik.schulz at gauner.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-zabbix-reporter at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Zabbix-Reporter>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Zabbix::Reporter
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Zabbix-Reporter>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Zabbix-Reporter>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Zabbix-Reporter>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Zabbix-Reporter/>
-
-=back
-
-=head1 ACKNOWLEDGEMENTS
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2012 Dominik Schulz.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
+=cut
