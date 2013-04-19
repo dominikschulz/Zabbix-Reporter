@@ -24,6 +24,23 @@
     width:100%;
     color:#000;
   }
+  .allgreen {
+    background: yellow;
+    font: 40px Arial;
+    font-weight: bold;
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .smiley {
+    font: 600px Arial;
+  }
+  .lastupdate {
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   /*
    * http://www.barelyfitz.com/screencast/html-training/css/positioning/
    */
@@ -151,7 +168,7 @@
     float: none;
   }
   .trigger > .severity {
-    width: 150px;
+    width: 155px;
     padding: 1px;
     margin: 5px;
     height: 30px;
@@ -160,7 +177,7 @@
     width: 400px;
   }
   .trigger > .name {
-    width: 600px;
+    width: 1100px;
   }
   .trigger > .details {
     display: none;
