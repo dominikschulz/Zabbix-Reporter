@@ -14,6 +14,7 @@ use namespace::autoclean;
 # use Carp;
 # use English qw( -no_match_vars );
 # use Try::Tiny;
+use Data::Dumper;
 
 # extends ...
 extends 'Zabbix::Reporter::Cmd::Command';
@@ -31,6 +32,7 @@ sub execute {
     my $self = shift;
     
     my $triggers = $self->zr()->triggers();
+    print Dumper($triggers);
     
     # TODO not yet implemented
     

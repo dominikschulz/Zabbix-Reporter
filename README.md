@@ -36,3 +36,11 @@ make install
 
 Please see perldoc Zabbix::Reporter.
 
+## Resources
+
+The following resources may prove helpful when dealing with the
+Zabbix database schema:
+
+* https://www.zabbix.com/documentation/1.8/api/
+* http://git.zabbixzone.com/zabbix1.8/.git/tree
+

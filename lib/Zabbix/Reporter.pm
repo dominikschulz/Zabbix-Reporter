@@ -5,7 +5,7 @@ use Moose;
 use namespace::autoclean;
 
 use DBI;
-use Cache::FileCache;
+use Cache::MemoryCache;
 
 has 'dbh' => (
     'is'    => 'rw',
@@ -44,8 +44,17 @@ has '_severity_map' => (
     'isa'   => 'ArrayRef',
     'default' => sub {
         [qw(nc information warning average high disaster)],
-    }
+    },
 );
+
+has '_event_value_map' => (
+   'is'        => 'ro',
+   'isa'       => 'ArrayRef',
+   'default'   => sub {
+      [qw(OK PROBLEM UNKNOWN)],
+   },
+);
+
 
 with qw(Config::Yak::RequiredConfig Log::Tree::RequiredLogger);
 
@@ -77,7 +86,10 @@ sub _init_dbh {
 sub _init_cache {
     my $self = shift;
     
-    my $Cache = Cache::FileCache::->new();
+    my $Cache = Cache::MemoryCache::->new({
+      'namespace'          => 'ZabbixReporter',
+      'default_expires_in' => 600,
+    });
     
     return $Cache;
 }
@@ -93,11 +105,13 @@ sub fetch_n_store {
     my $timeout = shift;
     my @args = @_;
     
-    my $result = $self->cache()->get($query);
+    my $key = $query.join(',',@args);
     
-    if( ! defined($result)) {
+    my $result = $self->cache()->get($key);
+    
+    if( ! defined($result) ) {
         $result = $self->fetch($query,@args);
-        $self->cache()->set($query,$result,$timeout);
+        $self->cache()->set($key,$result,$timeout);
     }
     
     return $result;
@@ -181,6 +195,8 @@ EOS
     my $rows = $self->fetch_n_store($sql,60);
 
     # Post processing
+    my @unacked = ();
+    my @acked   = ();
     if($rows) {
         foreach my $row (@{$rows}) {
             if (defined($row->{'priority'})) {
@@ -189,9 +205,121 @@ EOS
             if (defined($row->{'description'})) {
                 $row->{'description'} =~ s/\{HOSTNAME\}/$row->{'host'}/g;
             }
+            if (defined($row->{'triggerid'}) && defined($row->{'lastclock'})) {
+               my $ack = $self->acks($row->{'triggerid'},$row->{'lastclock'});
+               if($ack && ref($ack) eq 'ARRAY' && scalar @{$ack} > 0) {
+                  foreach my $field (keys %{$ack->[0]}) {
+                     $row->{$field} = $ack->[0]->{$field};
+                  }
+               }
+            }
+            # this should be the last post-processing action
+            if($row->{'acknowledged'}) {
+               push(@acked,$row);
+            } else {
+               push(@unacked,$row);
+            }
+        }
+    }
+    # sort acked triggers to the end
+    @{$rows} = (@unacked,@acked);
+
+    # Check for any disabled actions and prepend a warning as a pseudo trigger
+    # if there are some
+    my $disacts = $self->disabled_actions();
+   if($disacts && ref($disacts) eq 'ARRAY' && scalar @{$disacts} > 0) {
+      my $row = {
+         'severity'     => 'high',
+         'host'         => 'Zabbix',
+         'description'  => 'Notifications disabled!',
+         'lastchange'   => time(),
+         'comments'     => 'There are '.(scalar @{$disacts}).' notifications disabled. Please make sure you enable them again in time.',
+      };
+      unshift @{$rows}, $row;
+   }
+    
+    return $rows;
+}
+
+=method acks
+
+Retrieve all matching acknowlegements.
+
+=cut
+sub acks {
+    my $self = shift;
+    my $triggerid = shift;
+    my $triggerclock = shift;
+    
+    my $sql = <<'EOS';
+SELECT
+   e.eventid,
+   e.clock AS eventclock,
+   e.value,
+   e.acknowledged,
+   a.acknowledgeid,
+   a.userid,
+   a.clock AS ackclock,
+   a.message,
+   u.alias AS user
+FROM
+   events AS e
+LEFT JOIN
+   acknowledges AS a
+ON
+   e.eventid = a.eventid
+LEFT JOIN
+   users AS u
+ON
+   a.userid = u.userid
+WHERE
+   e.source = 0 AND
+   e.object = 0 AND
+   e.objectid = ? AND
+   e.clock >= ?
+ORDER BY
+   eventid DESC
+LIMIT 1
+EOS
+
+    my $rows = $self->fetch_n_store($sql,60,($triggerid,$triggerclock));
+
+    # Post processing
+    if($rows) {
+        foreach my $row (@{$rows}) {
+            if (defined($row->{'value'})) {
+                $row->{'status'} = $self->_event_value_map()->[$row->{'value'}];
+            }
         }
     }
     
+    return $rows;
+}
+
+=method disabled_actions
+
+Retrieve all disabled actions.
+
+=cut
+sub disabled_actions {
+    my $self = shift;
+    
+    # status = 0 -> action is enabled
+    # status = 1 -> action is disabled
+    my $sql = <<'EOS';
+SELECT
+   a.actionid,
+   a.name,
+   a.status
+FROM
+   actions AS a
+WHERE
+   a.eventsource = 0 AND
+   status = 1
+EOS
+
+    my $rows = $self->fetch_n_store($sql,60);
+
     return $rows;
 }
 
@@ -206,3 +334,4 @@ __END__
 Zabbix::Reporter - Zabbix dashboard
 
 =cut
+
