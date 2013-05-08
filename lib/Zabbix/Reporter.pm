@@ -79,6 +79,7 @@ sub _init_dbh {
     my $self = shift;
 
     my $dbh = DBI->connect($self->_dsn());
+    $dbh->{'mysql_auto_reconnect'} = 1;
     
     return $dbh;
 }
