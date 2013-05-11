@@ -36,3 +36,15 @@ make install
 
 Please see perldoc Zabbix::Reporter.
 
+## Examples
+
+![Zabbix::Reporter on Desktop](examples/zreporter-desktop.png)
+
+![Zabbix::Reporter on Mobile](examples/zreporter-small.png)
+
+![Zabbix::Reporter on Big Screens](examples/zreporter-tv.png)
+
+![Zabbix::Reporter w/ no active triggers](examples/zreporter-ok.png)
+
+Here is [an static snapshot of the Zabbix::Reporter demo page](examples/zreporter-static.html).
+
