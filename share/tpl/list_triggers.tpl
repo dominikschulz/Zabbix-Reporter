@@ -12,8 +12,8 @@
         <div class="trigger [% trigger.severity %]">
             <div class="field severity">[% trigger.severity | ucfirst %]</div>
             <div class="field icon">
-                [% IF trigger.acked %]
-                <embed src="img/checkbox_yes.svg" type="image/svg+xml" width="20" height="20" />
+                [% IF trigger.acknowledged %]
+                <div title="ACKed on [% trigger.eventclock | localtime %] by [% trigger.user %]"><embed src="img/checkbox_yes.svg" type="image/svg+xml" width="20" height="20" /></div>
                 [% ELSE %]
                 <embed src="img/checkbox_no.svg" type="image/svg+xml" width="20" height="20" />
                 [% END %]

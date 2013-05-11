@@ -88,10 +88,8 @@
     font-style: italic;
   }
   .trigger > .icon {
-    display: none;
   }
   .trigger > .button {
-      
   }
   .trigger > .clear {
     clear: both;

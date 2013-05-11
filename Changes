@@ -1,8 +1,14 @@
 Revision history for Zabbix-Reporter
 
-0.02    2013-03-29
-        Improve design.
+0.03     2013-05-04
+         Handle acknoledged events (triggers)
+         Display disabled actions (notifications)
+         Use in-memory chache instead of filecache
+         Fix check key handling
 
-0.01    2013-03-26
-        First version, released on an unsuspecting world.
+0.02     2013-03-29
+         Improve design.
+
+0.01     2013-03-26
+         First version, released on an unsuspecting world.
 

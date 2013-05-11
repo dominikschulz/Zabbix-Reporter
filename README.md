@@ -48,3 +48,11 @@ Please see perldoc Zabbix::Reporter.
 
 Here is [an static snapshot of the Zabbix::Reporter demo page](examples/zreporter-static.html).
 
+## Resources
+
+The following resources may prove helpful when dealing with the
+Zabbix database schema:
+
+* https://www.zabbix.com/documentation/1.8/api/
+* http://git.zabbixzone.com/zabbix1.8/.git/tree
+
