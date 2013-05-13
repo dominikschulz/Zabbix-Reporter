@@ -1,5 +1,9 @@
 Revision history for Zabbix-Reporter
 
+0.04     2013-05-13
+         Add mysql_auto_reconnect
+         Add examples and demo mode
+
 0.03     2013-05-04
          Handle acknoledged events (triggers)
          Display disabled actions (notifications)
