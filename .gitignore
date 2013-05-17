@@ -1,2 +1,3 @@
 .build/
 Zabbix-Reporter-*
+*.swp

@@ -48,7 +48,10 @@ sub execute {
         \$body,
     ) or $self->logger()->log( message => 'TT error: '.$self->tt()->error, level => 'warning', );
     
-    return [ 200, [ 'Content-Type', 'text/html' ], [$body] ];
+    return [ 200, [
+      'Content-Type', 'text/html',
+      'Cache-Control', 'max-age='.($refresh+10).', private',
+    ], [$body] ];
 }
 
 no Moose;
