@@ -50,7 +50,7 @@ sub execute {
     
     return [ 200, [
       'Content-Type', 'text/html',
-      'Cache-Control', 'max-age='.($refresh+10).', private',
+      'Cache-Control', 'max-age='.($refresh-1).', private',
     ], [$body] ];
 }
 

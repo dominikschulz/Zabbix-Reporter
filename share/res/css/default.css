@@ -45,19 +45,31 @@
    * http://www.barelyfitz.com/screencast/html-training/css/positioning/
    */
   .trigger {
-    background:lightgrey;
+    background-color: lightgrey;
     color:#000;
     border-bottom:1px solid #f6f6f6;
     border-top:1px solid #f6f6f6;
     position: relative;
     height: 60px;
+    /*
+     * white-space: nowarp and overflow: hidden are importatnt to
+     * prevent the elements of the trigger div from wrapping and wrecking
+     * the layout
+     */
+    white-space: nowrap;
+    overflow: hidden;
     
-    -moz-box-shadow:    inset 0 6px 6px -6px rgba(0,0,0,0.75),
-		        inset 0 -6px 6px -6px rgba(0,0,0,0.75);
     -webkit-box-shadow: inset 0 6px 6px -6px rgba(0,0,0,0.75),
-			inset 0 -6px 6px -6px rgba(0,0,0,0.75);
+			               inset 0 -6px 6px -6px rgba(0,0,0,0.75);
+    -moz-box-shadow:    inset 0 6px 6px -6px rgba(0,0,0,0.75),
+		                  inset 0 -6px 6px -6px rgba(0,0,0,0.75);
+    -ms-box-shadow:     inset 0 6px 6px -6px rgba(0,0,0,0.75),
+			               inset 0 -6px 6px -6px rgba(0,0,0,0.75);
+    -o-box-shadow:      inset 0 6px 6px -6px rgba(0,0,0,0.75),
+			               inset 0 -6px 6px -6px rgba(0,0,0,0.75);
     box-shadow:         inset 0 6px 6px -6px rgba(0,0,0,0.75),
-			inset 0 -6px 6px -6px rgba(0,0,0,0.75);
+			               inset 0 -6px 6px -6px rgba(0,0,0,0.75);
+   background-size: 40px 40px;
   }
   .trigger > div {
     margin: 10px;
@@ -110,9 +122,11 @@
      * part II
      */
     opacity: 1.0;
-    -webkit-animation-name: pulse; 
-    -webkit-animation-duration: 0.5s; 
-    -webkit-animation-iteration-count: infinite;
+    -webkit-animation: pulse 0.5s infinite; 
+    -moz-animation: pulse 0.5s infinite; 
+    -ms-animation: pulse 0.5s infinite; 
+    -o-animation: pulse 0.5s infinite; 
+    animation: pulse 0.5s infinite; 
   }
   .high {
     background:#ffcdcd;
@@ -149,6 +163,22 @@
   .nc {
     background: grey;
     color: #fff;
+  }
+  .acknowledged {
+   background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(221,255,205,.5) 35px, rgba(221,255,205,.5) 70px);
+   !important;
+  }
+  .icon .acked {
+   background-position: 0px 0px;
+   background-image: url(../img/sprite.png);
+   width: 16px;
+   height: 16px;
+  }
+  .icon .noack {
+   background-position: 0px -16px;
+   background-image: url(../img/sprite.png);
+   width: 16px;
+   height: 16px;
   }
 }
 /* for TV screens */

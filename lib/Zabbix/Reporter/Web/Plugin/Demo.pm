@@ -105,7 +105,7 @@ sub execute {
          'description'  => 'DNS Down',
          'lastchange'   => '1368300364',
          'comments'     => 'This shows a nameserver which is unreachable',
-         'acked'        => 1,
+         'acknowledged' => 1,
       },
       {
          'severity'     => 'high',
@@ -113,7 +113,7 @@ sub execute {
          'description'  => 'Webserver Down',
          'lastchange'   => '1368300364',
          'comments'     => 'This shows a webserver which is unreachable',
-         'acked'        => 1,
+         'acknowledged' => 1,
       },
       {
          'severity'     => 'average',
@@ -121,7 +121,7 @@ sub execute {
          'description'  => 'Webserver Down',
          'lastchange'   => '1368300364',
          'comments'     => 'This shows a webserver which is unreachable',
-         'acked'        => 1,
+         'acknowledged' => 1,
       },
       {
          'severity'     => 'warning',
@@ -129,7 +129,7 @@ sub execute {
          'description'  => 'HDD almost full',
          'lastchange'   => '1368300364',
          'comments'     => 'This shows a HDD which is almost full',
-         'acked'        => 1,
+         'acknowledged' => 1,
       },
       {
          'severity'     => 'information',
@@ -137,7 +137,7 @@ sub execute {
          'description'  => '/etc/passwd was just changed',
          'lastchange'   => '1368300364',
          'comments'     => 'This shows a webserver which is unreachable',
-         'acked'        => 1,
+         'acknowledged' => 1,
       },
       {
          'severity'     => 'nc',
@@ -145,7 +145,7 @@ sub execute {
          'description'  => 'Webserver Down',
          'lastchange'   => '1368300364',
          'comments'     => 'This shows a webserver which is unreachable',
-         'acked'        => 1,
+         'acknowledged' => 1,
       },
     ]; 
     my $refresh  = $request->{'refresh'} || 30;
