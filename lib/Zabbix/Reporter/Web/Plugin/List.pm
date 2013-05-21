@@ -34,7 +34,7 @@ List all active triggers.
 sub execute {
     my $self = shift;
     my $request = shift;
-    
+
     my $triggers = $self->zr()->triggers();
     my $refresh  = $request->{'refresh'} || 30;
 
@@ -47,7 +47,7 @@ sub execute {
         },
         \$body,
     ) or $self->logger()->log( message => 'TT error: '.$self->tt()->error, level => 'warning', );
-    
+
     return [ 200, [
       'Content-Type', 'text/html',
       'Cache-Control', 'max-age='.($refresh-1).', private',

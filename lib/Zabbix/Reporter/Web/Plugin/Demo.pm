@@ -34,7 +34,7 @@ List a set of fake triggers.
 sub execute {
     my $self = shift;
     my $request = shift;
-    
+
 =head1 demo
 
         <div class="trigger [% trigger.severity %]">
@@ -147,7 +147,7 @@ sub execute {
          'comments'     => 'This shows a webserver which is unreachable',
          'acknowledged' => 1,
       },
-    ]; 
+    ];
     my $refresh  = $request->{'refresh'} || 30;
 
     # include acked triggers
@@ -169,7 +169,7 @@ sub execute {
         },
         \$body,
     ) or $self->logger()->log( message => 'TT error: '.$self->tt()->error, level => 'warning', );
-    
+
     return [ 200, [ 'Content-Type', 'text/html' ], [$body] ];
 }
 

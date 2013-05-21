@@ -14,7 +14,7 @@ use Zabbix::Reporter::Web;
 my $Frontend = Zabbix::Reporter::Web::->new();
 my $app = sub {
     my $env = shift;
-    
+
     return $Frontend->run($env);
 };
 

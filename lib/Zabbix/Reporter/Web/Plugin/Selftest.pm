@@ -42,7 +42,7 @@ Perform an Zabbix Server Selftest/Healthcheck
 sub execute {
    my $self = shift;
    my $request = shift;
-    
+
    my $body;
    my $status = 200;
 
@@ -77,7 +77,7 @@ sub execute {
       $body .= "ERROR - Server is not listening on port 10051\n";
       $status = 503;
    }
-    
+
     return [ $status, [
       'Content-Type', 'text/plain',
       'Cache-Control', 'no-store, private', # no caching for the selftest
@@ -105,7 +105,7 @@ sub _check_open_port {
 
 sub _check_db_ping {
    my $self = shift;
-   
+
    if($self->zr()->dbh()->ping()) {
       return 1;
    }

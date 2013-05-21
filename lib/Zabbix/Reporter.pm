@@ -60,7 +60,7 @@ with qw(Config::Yak::RequiredConfig Log::Tree::RequiredLogger);
 
 sub _dsn {
     my $self = shift;
-    
+
     my $hostname = $self->config()->get( 'Zabbix::Reporter::DB::Hostname', { Default => 'localhost', } );
     my $port = $self->config()->get( 'Zabbix::Reporter::DB::Port', { Default => 3306, } );
     my $database = $self->config()->get( 'Zabbix::Reporter::DB::Database', { Default => 'zabbix', } );
@@ -80,18 +80,18 @@ sub _init_dbh {
 
     my $dbh = DBI->connect($self->_dsn());
     $dbh->{'mysql_auto_reconnect'} = 1;
-    
+
     return $dbh;
 }
 
 sub _init_cache {
     my $self = shift;
-    
+
     my $Cache = Cache::MemoryCache::->new({
       'namespace'          => 'ZabbixReporter',
       'default_expires_in' => 600,
     });
-    
+
     return $Cache;
 }
 
@@ -105,16 +105,16 @@ sub fetch_n_store {
     my $query = shift;
     my $timeout = shift;
     my @args = @_;
-    
+
     my $key = $query.join(',',@args);
-    
+
     my $result = $self->cache()->get($key);
-    
+
     if( ! defined($result) ) {
         $result = $self->fetch($query,@args);
         $self->cache()->set($key,$result,$timeout);
     }
-    
+
     return $result;
 }
 
@@ -127,20 +127,20 @@ sub fetch {
     my $self = shift;
     my $query = shift;
     my @args = @_;
-    
+
     my $sth = $self->dbh()->prepare($query)
         or die("Could not prepare query $query: ".$self->dbh()->errstr);
-    
+
     $sth->execute(@args)
         or die("Could not execute query $query: ".$self->dbh()->errstr);
-    
+
     my @result = ();
-    
+
     while(my $ref = $sth->fetchrow_hashref()) {
         push(@result,$ref);
     }
     $sth->finish();
-    
+
     return \@result;
 }
 
@@ -151,7 +151,7 @@ Retrieve all matching triggers.
 =cut
 sub triggers {
     my $self = shift;
-    
+
     my $sql = <<'EOS';
 SELECT
     t.priority,
@@ -238,7 +238,7 @@ EOS
       };
       unshift @{$rows}, $row;
    }
-    
+
     return $rows;
 }
 
@@ -251,7 +251,7 @@ sub acks {
     my $self = shift;
     my $triggerid = shift;
     my $triggerclock = shift;
-    
+
     my $sql = <<'EOS';
 SELECT
    e.eventid,
@@ -293,7 +293,7 @@ EOS
             }
         }
     }
-    
+
     return $rows;
 }
 
@@ -304,7 +304,7 @@ Retrieve all disabled actions.
 =cut
 sub disabled_actions {
     my $self = shift;
-    
+
     # status = 0 -> action is enabled
     # status = 1 -> action is disabled
     my $sql = <<'EOS';

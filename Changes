@@ -1,5 +1,8 @@
 Revision history for Zabbix-Reporter
 
+0.05     2013-05-21
+         Add Zabbix Selftest for external monitoring
+
 0.04     2013-05-13
          Add mysql_auto_reconnect
          Add examples and demo mode

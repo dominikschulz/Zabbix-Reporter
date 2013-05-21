@@ -30,12 +30,12 @@ List all triggers.
 =cut
 sub execute {
     my $self = shift;
-    
+
     my $triggers = $self->zr()->triggers();
     print Dumper($triggers);
-    
+
     # TODO not yet implemented
-    
+
     return 1;
 }
 

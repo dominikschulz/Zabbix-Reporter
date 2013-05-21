@@ -71,7 +71,7 @@ sub _init_fields {
 
 sub _init_key {
     my $self = shift;
-    
+
     return $self->config()->get('Zabbix::Reporter::Key', { Default => '', }, );
 }
 
@@ -231,7 +231,7 @@ sub _handle_request {
 
     my $mode = $request->{'mode'} || 'list_triggers';
     my $key  = $request->{'key'};
-    
+
     # Check API key
     if($self->_key() && (!$key || $key ne $self->_key())) {
         return [ 400, [ 'Content-Type', 'text/plain' ], ['Bad Request - Invalid key'] ];

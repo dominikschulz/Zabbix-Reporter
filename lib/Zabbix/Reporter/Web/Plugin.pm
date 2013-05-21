@@ -61,12 +61,12 @@ has 'alias' => (
 # initializers ...
 sub _init_zr {
     my $self = shift;
-    
+
     my $ZR = Zabbix::Reporter::->new({
         'config'    => $self->config(),
         'logger'    => $self->logger(),
     });
-    
+
     return $ZR;
 }
 
