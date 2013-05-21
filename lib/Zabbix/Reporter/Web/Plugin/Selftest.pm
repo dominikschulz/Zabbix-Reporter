@@ -46,12 +46,11 @@ sub execute {
    my $body;
    my $status = 200;
 
-   if($self->zr()->dbh()->ping()) {
+   if($self->_check_db_ping()) {
       $body .= "OK - DB Connection is working\n";
-
    } else {
       $body .= "ERROR - DB connection not working!\n";
-      $status = 500;
+      $status = 503;
    }
 
    # Make sure there were any event during the last 5 minutes
@@ -59,7 +58,7 @@ sub execute {
       $body .= "OK - Some events during the last 5 minutes\n";
    } else {
       $body .= "ERROR - No events during the last 5 minutes\n";
-      $status = 500;
+      $status = 503;
    }
 
    # Make sure there was at least on trigger event in the last 24h
@@ -67,7 +66,7 @@ sub execute {
       $body .= "OK - Some events during the last 5 minutes\n";
    } else {
       $body .= "ERROR - No events during the last 5 minutes\n";
-      $status = 500;
+      $status = 503;
    }
 
 
@@ -76,7 +75,7 @@ sub execute {
       $body .= "OK - Server is listening on port 10051\n";
    } else {
       $body .= "ERROR - Server is not listening on port 10051\n";
-      $status = 500;
+      $status = 503;
    }
     
     return [ $status, [
@@ -89,7 +88,7 @@ sub _check_open_port {
    my $self = shift;
    my $port = shift || 10051;
 
-   my $sock = IO::Socket::INET6::->new(
+   my $sock = IO::Socket::INET::->new(
       Proto    => 'tcp',
       PeerAddr => $self->zabbix_server_address(),
       PeerPort => $port,
@@ -122,7 +121,7 @@ sub _check_db_count {
       return;
    }
 
-   my $sth = $self->zr()->prepare($sql);
+   my $sth = $self->zr()->dbh()->prepare($sql);
    if(!$sth) {
       return;
    }
