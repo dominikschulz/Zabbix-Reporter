@@ -184,7 +184,7 @@ EOS
         $sql .= ' AND t.priority IN ('.join(',',@{$self->priorities()}).')';
     }
     if($self->min_age()) {
-        $sql .= ' AND t.lastchange < NOW() - INTERVAL '.$self->min_age().' MINUTE';
+        $sql .= ' AND t.lastchange < UNIX_TIMESTAMP(NOW() - INTERVAL '.$self->min_age().' MINUTE)';
     }
     if($self->groups() && @{$self->groups()} > 0) {
         my $sub_sql = "SELECT hostid FROM host_groups WHERE groupid IN (".join(',',@{$self->groups()}).")";
