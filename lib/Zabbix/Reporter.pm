@@ -409,7 +409,7 @@ sub unattended_alarms {
 SELECT
     COUNT(t.triggerid) AS alarms
 FROM
-    triggers t 
+    triggers AS t
     JOIN functions AS f ON (f.triggerid = t.triggerid)
     JOIN items     AS i ON (i.itemid = f.itemid)
     JOIN hosts     AS h ON (h.hostid = i.hostid)
