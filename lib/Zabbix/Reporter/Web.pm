@@ -190,6 +190,14 @@ sub _init_tt {
                 $mon++;
                 return sprintf('%02d.%02d.%04d %02d:%02d:%02d', $mday, $mon, $year, $hour, $min, $sec);
             },
+            'sev2btn'       => sub {
+                my $str = shift;
+                return 'btn-info' if $str =~ m/^information$/i;
+                return 'btn-warning' if $str =~ m/^warning$/i;
+                return 'btn-warning' if $str =~ m/^average$/i;
+                return 'btn-danger' if $str =~ m/^high$/i;
+                return 'btn-danger' if $str =~ m/^disaster$/i;
+            },
         },
     };
     my $TT = Template::->new($tpl_config);

@@ -436,7 +436,8 @@ Retrieve all triggers.
 =cut
 sub history {
     my $self = shift;
-    my $max_age = shift;
+    my $max_age = shift // 30;
+    my $max_num = shift // 100;
 
     my $sql = <<'EOS';
 SELECT
@@ -454,11 +455,17 @@ WHERE
     e.source = 0 AND
     e.value = 1
 EOS
+  my @args = ();
   if($max_age) {
-      $sql .= ' AND e.clock > UNIX_TIMESTAMP(NOW() - INTERVAL '.$max_age.' DAY)';
+      $sql .= ' AND e.clock > UNIX_TIMESTAMP(NOW() - INTERVAL ? DAY)';
+      push(@args,$max_age);
   }
   $sql .= ' ORDER BY e.clock DESC';
-  my $rows = $self->fetch_n_store($sql,120);
+  if($max_num) {
+      $sql .= ' LIMIT ?';
+      push(@args,$max_num);
+  }
+  my $rows = $self->fetch_n_store($sql,120,@args);
 
   # Postprocessing
   if($rows) {

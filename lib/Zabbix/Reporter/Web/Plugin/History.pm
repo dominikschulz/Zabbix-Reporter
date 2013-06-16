@@ -21,7 +21,7 @@ extends 'Zabbix::Reporter::Web::Plugin';
 # has ...
 # with ...
 # initializers ...
-sub _init_fields { return [qw(limit offset refresh age)]; }
+sub _init_fields { return [qw(limit offset refresh age num)]; }
 
 sub _init_alias { return 'list_history'; }
 
@@ -37,7 +37,8 @@ sub execute {
 
     my $refresh  = $request->{'refresh'} || 360;
     my $age      = $request->{'age'}     || 30;
-    my $triggers = $self->zr()->history($age);
+    my $num      = $request->{'num'}     || 100;
+    my $triggers = $self->zr()->history($age,$num);
 
     my $body;
     $self->tt()->process(
@@ -45,6 +46,9 @@ sub execute {
         {
             'triggers' => $triggers,
             'refresh'  => $refresh,
+            'title'    => 'Zabbix Trigger History',
+            'age'      => $age,
+            'num'      => $num,
         },
         \$body,
     ) or $self->logger()->log( message => 'TT error: '.$self->tt()->error, level => 'warning', );
