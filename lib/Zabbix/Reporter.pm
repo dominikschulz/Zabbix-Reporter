@@ -8,34 +8,46 @@ use DBI;
 use Cache::MemoryCache;
 
 has 'dbh' => (
-    'is'    => 'rw',
-    'isa'   => 'DBI::db',
-    'lazy'  => 1,
+    'is'      => 'rw',
+    'isa'     => 'DBI::db',
+    'lazy'    => 1,
     'builder' => '_init_dbh',
 );
 
 has 'cache' => (
-    'is'    => 'rw',
-    'isa'   => 'Cache::Cache',
-    'lazy'  => 1,
+    'is'      => 'rw',
+    'isa'     => 'Cache::Cache',
+    'lazy'    => 1,
     'builder' => '_init_cache',
 );
 
 has 'priorities' => (
-    'is'    => 'rw',
-    'isa'   => 'ArrayRef',
+    'is'      => 'rw',
+    'isa'     => 'ArrayRef',
     'default' => sub { [] },
 );
 
 has 'min_age' => (
-    'is'    => 'rw',
-    'isa'   => 'Int',
+    'is'      => 'rw',
+    'isa'     => 'Int',
+    'default' => 0,
+);
+
+has 'warn_unsupported' => (
+    'is'      => 'rw',
+    'isa'     => 'Bool',
+    'default' => 0,
+);
+
+has 'warn_unattended' => (
+    'is'      => 'rw',
+    'isa'     => 'Bool',
     'default' => 0,
 );
 
 has 'groups' => (
-    'is'    => 'rw',
-    'isa'   => 'ArrayRef',
+    'is'      => 'rw',
+    'isa'     => 'ArrayRef',
     'default' => sub { [] },
 );
 
@@ -205,6 +217,7 @@ EOS
             }
             if (defined($row->{'description'})) {
                 $row->{'description'} =~ s/\{HOSTNAME\}/$row->{'host'}/g;
+                $row->{'description'} =~ s/\{HOST\.DNS\}/$row->{'host'}/g;
             }
             if (defined($row->{'triggerid'}) && defined($row->{'lastclock'})) {
                my $ack = $self->acks($row->{'triggerid'},$row->{'lastclock'});
@@ -225,6 +238,37 @@ EOS
     # sort acked triggers to the end
     @{$rows} = (@unacked,@acked);
 
+  # Check for any unsupported items and prepend a warning as a pseudo trigger
+  # if there are some
+  if($self->warn_unsupported()) {
+    my $unsupported = $self->unsupported_items();
+    if($unsupported && ref($unsupported) eq 'ARRAY' && scalar @{$unsupported} > 0) {
+      my $row = {
+         'severity'     => 'high',
+         'host'         => 'Zabbix',
+         'description'  => 'Unsupported Items!',
+         'lastchange'   => time(),
+         'comments'     => 'There are '.(scalar @{$unsupported}).' unsupported items.',
+      };
+      unshift @{$rows}, $row;
+    }
+  }
+
+  # Check for any unattended alarms and prepend a warning as a pseudo trigger
+  # if there are some
+  if($self->warn_unattended()) {
+    my $unattended = $self->unattended_alarms();
+    if($unattended && ref($unattended) eq 'ARRAY' && scalar @{$unattended} > 0) {
+      my $row = {
+         'severity'     => 'high',
+         'host'         => 'Zabbix',
+         'description'  => 'Unattended Alarms!',
+         'lastchange'   => time(),
+         'comments'     => 'There are '.$unattended->[0].' unattended alarms.',
+      };
+      unshift @{$rows}, $row;
+    }
+  }
     # Check for any disabled actions and prepend a warning as a pseudo trigger
     # if there are some
     my $disacts = $self->disabled_actions();
@@ -324,6 +368,108 @@ EOS
     return $rows;
 }
 
+=method unsupported_items
+
+Retrieve all unsupported items.
+
+=cut
+sub unsupported_items {
+    my $self = shift;
+
+    # i.status 3 == Item Error: Not Supported
+    my $sql = <<'EOS';
+SELECT
+    h.host,
+    i.key_,
+    i.lastclock
+FROM
+    items i
+    JOIN hosts h ON (h.hostid = i.hostid)
+WHERE
+    i.status = 3
+ORDER BY
+    i.lastclock DESC
+EOS
+
+    my $rows = $self->fetch_n_store($sql,3600);
+
+    return $rows;
+}
+
+=method unattended_alarms
+
+Retrieve all unsupported items.
+
+=cut
+sub unattended_alarms {
+    my $self = shift;
+    my $time = shift || 3600;
+
+    my $sql = <<'EOS';
+SELECT
+    COUNT(t.triggerid) AS alarms
+FROM
+    triggers t 
+    JOIN functions AS f ON (f.triggerid = t.triggerid)
+    JOIN items     AS i ON (i.itemid = f.itemid)
+    JOIN hosts     AS h ON (h.hostid = i.hostid)
+    JOIN events    AS e ON (e.objectid = t.triggerid)
+WHERE
+    t.lastchange = e.clock AND
+    h.status= 0 AND
+    t.value = 1 AND
+    t.status = 0 AND
+    i.status = 0 AND
+    t.lastchange < ( UNIX_TIMESTAMP() - ? ) AND
+    e.acknowledged = 0
+EOS
+
+    my $rows = $self->fetch_n_store($sql,360,$time);
+
+    return $rows;
+}
+
+=method history
+
+Retrieve all triggers.
+
+=cut
+sub history {
+    my $self = shift;
+    my $max_age = shift;
+
+    my $sql = <<'EOS';
+SELECT
+    h.host,
+    t.description,
+    t.priority,
+    e.clock
+FROM
+    events e
+    JOIN triggers t ON (t.triggerid = e.objectid)
+    JOIN functions f ON (f.triggerid = t.triggerid)
+    JOIN items i ON (i.itemid = f.itemid)
+    JOIN hosts h ON (h.hostid = i.hostid)
+WHERE
+    e.source = 0 AND
+    e.value = 1
+EOS
+  if($max_age) {
+      $sql .= ' AND e.clock > UNIX_TIMESTAMP(NOW() - INTERVAL '.$max_age.' DAY)';
+  }
+  $sql .= ' ORDER BY e.clock DESC';
+  my $rows = $self->fetch_n_store($sql,120);
+
+  # Postprocessing
+  if($rows) {
+      foreach my $row (@{$rows}) {
+          if (defined($row->{'priority'})) {
+              $row->{'severity'} = $self->_severity_map()->[$row->{'priority'}];
+          }
+      }
+  }
+  return $rows;
+}
 __PACKAGE__->meta->make_immutable;
 
 1; # End of Zabbix::Reporter

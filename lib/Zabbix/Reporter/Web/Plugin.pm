@@ -14,7 +14,6 @@ use namespace::autoclean;
 # use Carp;
 # use English qw( -no_match_vars );
 # use Try::Tiny;
-use Zabbix::Reporter;
 
 # extends ...
 # has ...
@@ -37,13 +36,6 @@ has 'tt' => (
     'required'      => 1,
 );
 
-has 'zr' => (
-    'is'            => 'rw',
-    'isa'           => 'Zabbix::Reporter',
-    'lazy'          => 1,
-    'builder'       => '_init_zr',
-);
-
 has 'fields' => (
     'is'            => 'ro',
     'isa'           => 'ArrayRef',
@@ -57,19 +49,14 @@ has 'alias' => (
     'lazy'          => 1,
     'builder'       => '_init_alias',
 );
+
+has 'zr' => (
+    'is'            => 'rw',
+    'isa'           => 'Zabbix::Reporter',
+    'required'      => 1,
+);
 # with ...
 # initializers ...
-sub _init_zr {
-    my $self = shift;
-
-    my $ZR = Zabbix::Reporter::->new({
-        'config'    => $self->config(),
-        'logger'    => $self->logger(),
-    });
-
-    return $ZR;
-}
-
 sub _init_alias { return ''; }
 
 # your code here ...
@@ -86,3 +73,4 @@ __END__
 Zabbix::Reporter::Web::API::Plugin - baseclass for any web plugin
 
 =cut
+

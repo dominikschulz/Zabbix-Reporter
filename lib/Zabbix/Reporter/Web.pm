@@ -20,6 +20,8 @@ use File::ShareDir;
 
 use Plack::Request;
 
+use Zabbix::Reporter;
+
 # extends ...
 # has ...
 has '_key'  => (
@@ -59,11 +61,19 @@ has '_tt' => (
     'builder' => '_init_tt',
 );
 
+has 'zr' => (
+    'is'            => 'rw',
+    'isa'           => 'Zabbix::Reporter',
+    'lazy'          => 1,
+    'builder'       => '_init_zr',
+);
+
 # with ...
 with qw(Config::Yak::LazyConfig Log::Tree::Logger);
 
 sub _log_facility { return 'zreporter-web'; }
 sub _config_locations { return [qw(conf /etc/zreporter)]; }
+
 # initializers ...
 sub _init_fields {
     return [qw(mode key)];
@@ -84,6 +94,19 @@ sub _init_finder {
     return $Finder;
 } ## end sub _init_finder
 
+sub _init_zr {
+    my $self = shift;
+
+    my $ZR = Zabbix::Reporter::->new({
+        'config'    => $self->config(),
+        'logger'    => $self->logger(),
+        'warn_unattended' => $self->config()->get('Zabbix::Reporter::WarnUnattended', { Default => 0, } ),
+        'warn_unsupported' => $self->config()->get('Zabbix::Reporter::WarnUnsupported', { Default => 0, } ),
+    });
+
+    return $ZR;
+}
+
 sub _init_plugins {
     my $self = shift;
 
@@ -100,6 +123,7 @@ sub _init_plugins {
         $arg_ref->{'logger'} = $self->logger();
         $arg_ref->{'config'} = $self->config();
         $arg_ref->{'tt'}     = $self->_tt();
+        $arg_ref->{'zr'}     = $self->zr();
         if ( $arg_ref->{'disabled'} ) {
             $self->logger()->log( message => 'Skipping disabled plugin: ' . $class_name, level => 'debug', );
             next PLUGIN;
