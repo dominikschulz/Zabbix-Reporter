@@ -279,11 +279,27 @@ sub _handle_request {
         }
     } ## end if ( $mode && $self->plugins...)
     else {
-        return [ 400, [ 'Content-Type', 'text/plain' ], ['Bad Request - Command not found'] ];
+        return [ 400, [ 'Content-Type', 'text/html' ], [$self->_list_plugins()] ];
     }
 
     return 1;
 } ## end sub _handle_request
+
+sub _list_plugins {
+  my $self = shift;
+  my $request = shift;
+
+  my $body = '<html><body><h1>Bad Request - Command not found</h1><h2>Available Plugins</h2><ul>';
+  try {
+    foreach my $plugin (sort keys %{ $self->plugins() } ) {
+      my $alias = $self->plugins->{$plugin}->alias();
+      $body .= '<li><a href="?mode='.$alias.'">'.$plugin.'</a>';
+    }
+  };
+  $body .= '</ul></body></html>';
+
+  return $body;
+}
 
 sub _log_request {
     my $self        = shift;
