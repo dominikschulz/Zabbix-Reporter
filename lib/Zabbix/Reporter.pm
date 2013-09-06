@@ -368,6 +368,31 @@ EOS
     return $rows;
 }
 
+=method enable_actions
+
+Enables all actions.
+
+=cut
+sub enable_actions {
+  my $self = shift;
+
+  # status = 0 -> action is enabled
+  # status = 1 -> action is disabled
+  my $sql = <<'EOS';
+UPDATE
+  actions
+SET
+  status = 0
+WHERE
+  status = 1 AND
+  eventsource = 0
+EOS
+
+  my $rows = $self->fetch($sql);
+
+  return $rows;
+}
+
 =method unsupported_items
 
 Retrieve all unsupported items.
