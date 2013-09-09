@@ -156,6 +156,25 @@ sub fetch {
     return \@result;
 }
 
+=method do
+
+Execute an Stmt in the DB.
+
+=cut
+sub do {
+    my $self = shift;
+    my $query = shift;
+    my @args = @_;
+
+    my $sth = $self->dbh()->prepare($query)
+        or die("Could not prepare query $query: ".$self->dbh()->errstr);
+
+    $sth->execute(@args)
+        or die("Could not execute query $query: ".$self->dbh()->errstr);
+
+    return 1;
+}
+
 =method triggers
 
 Retrieve all matching triggers.
@@ -388,7 +407,7 @@ WHERE
   eventsource = 0
 EOS
 
-  my $rows = $self->fetch($sql);
+  my $rows = $self->do($sql);
 
   return $rows;
 }
